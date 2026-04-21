@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Asistencia — CENS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #1a2744; --gold: #c9a84c; --cream: #f5f0e8;
+      --cream-dark: #ede5d4; --white: #fff; --muted: #6b7a99;
+      --success: #2d7a4f; --error: #b83232; --warn: #b87a00;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--navy); min-height: 100vh; }
+
+    header {
+      background: var(--navy); color: var(--white);
+      padding: 20px 40px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .header-logo { width: 36px; height: 36px; color: var(--gold); }
+    .header-title { font-family: 'DM Serif Display', serif; font-size: 1.3rem; }
+    .header-sub { font-size: 0.72rem; opacity: 0.6; margin-top: 2px; }
+
+    /* ── TABS ── */
+    .tabs { display: flex; gap: 0; background: var(--navy); padding: 0 40px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .tab-btn {
+      background: none; border: none; color: rgba(255,255,255,0.5);
+      font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500;
+      padding: 12px 20px; cursor: pointer; border-bottom: 2px solid transparent;
+      transition: all 0.15s; letter-spacing: 0.04em;
+    }
+    .tab-btn:hover { color: rgba(255,255,255,0.8); }
+    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    main { max-width: 1200px; margin: 0 auto; padding: 28px 24px; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── FILTROS ── */
+    .filters {
+      background: var(--white); border-radius: 16px; padding: 18px 24px;
+      display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end;
+      margin-bottom: 20px; box-shadow: 0 4px 16px rgba(26,39,68,0.08);
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+    .filter-group label { font-size: 0.7rem; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+    .filter-group input, .filter-group select {
+      border: 1.5px solid var(--cream-dark); border-radius: 10px;
+      padding: 9px 13px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; color: var(--navy); background: var(--cream); outline: none;
+    }
+    .filter-group input:focus, .filter-group select:focus { border-color: var(--navy); }
+    .btn-buscar {
+      background: var(--navy); color: var(--white); border: none; border-radius: 10px;
+      padding: 10px 22px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; align-self: flex-end;
+    }
+    .btn-buscar:hover { opacity: 0.85; }
+    .btn-export {
+      background: transparent; border: 1.5px solid var(--navy); color: var(--navy);
+      border-radius: 10px; padding: 9px 18px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; margin-bottom: 14px; transition: background 0.15s;
+    }
+    .btn-export:hover { background: var(--cream-dark); }
+
+    /* ── STATS ── */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    .stat-card { background: var(--white); border-radius: 14px; padding: 16px 18px; box-shadow: 0 4px 16px rgba(26,39,68,0.08); }
+    .stat-label { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .stat-value { font-family: 'DM Serif Display', serif; font-size: 1.9rem; color: var(--navy); margin-top: 4px; }
+    .stat-value.verde { color: var(--success); }
+    .stat-value.rojo  { color: var(--error); }
+
+    /* ── TABLA ── */
+    .table-wrap { background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 16px rgba(26,39,68,0.08); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    thead { background: var(--navy); color: var(--white); }
+    thead th { padding: 13px 16px; text-align: left; font-weight: 500; font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid var(--cream); transition: background 0.1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--cream); }
+    tbody td { padding: 11px 16px; }
+    .badge-ok   { display: inline-block; background: #e6f4ed; color: var(--success); border-radius: 100px; padding: 3px 10px; font-size: 0.72rem; font-weight: 700; }
+    .badge-no   { display: inline-block; background: #fde8e8; color: var(--error);   border-radius: 100px; padding: 3px 10px; font-size: 0.72rem; font-weight: 700; }
+    .badge-sede { display: inline-block; background: #eef1f8; color: var(--navy);    border-radius: 100px; padding: 3px 10px; font-size: 0.7rem; }
+
+    .empty-state { text-align: center; padding: 50px 20px; color: var(--muted); }
+    #status-msg, #status-msg-inf, #status-msg-doc { font-size: 0.83rem; color: var(--muted); padding: 6px 0 12px; }
+
+    /* ── INFORME POR DOCENTE ── */
+    .informe-header {
+      background: var(--white); border-radius: 16px; padding: 20px 24px; margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(26,39,68,0.08);
+    }
+    .informe-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; margin-bottom: 4px; }
+    .informe-header p  { font-size: 0.82rem; color: var(--muted); }
+
+    .periodo-bar {
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px;
+    }
+    .periodo-btn {
+      background: var(--cream); border: 1.5px solid var(--cream-dark); color: var(--navy);
+      border-radius: 100px; padding: 6px 16px; font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+    }
+    .periodo-btn:hover { border-color: var(--navy); }
+    .periodo-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+
+    .docente-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .docente-card {
+      background: var(--white); border-radius: 14px; padding: 18px 20px;
+      box-shadow: 0 4px 16px rgba(26,39,68,0.08); cursor: pointer;
+      border: 2px solid transparent; transition: border-color 0.15s;
+    }
+    .docente-card:hover { border-color: var(--gold); }
+    .docente-card.selected { border-color: var(--navy); }
+    .docente-card-nombre { font-weight: 600; font-size: 0.95rem; margin-bottom: 10px; }
+    .docente-mini-stats { display: flex; gap: 12px; }
+    .dms { font-size: 0.78rem; }
+    .dms .n { font-family: 'DM Serif Display', serif; font-size: 1.4rem; display: block; }
+    .dms .l { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .detalle-wrap { display: none; }
+    .detalle-wrap.visible { display: block; }
+    .detalle-titulo { font-family: 'DM Serif Display', serif; font-size: 1.1rem; margin-bottom: 14px; }
+
+    /* ── SEMANA CALENDAR VIEW ── */
+    .semana-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 20px; }
+    .dia-cell {
+      background: var(--white); border-radius: 10px; padding: 10px 8px; text-align: center;
+      box-shadow: 0 2px 8px rgba(26,39,68,0.07);
+    }
+    .dia-cell.presente { background: #e6f4ed; }
+    .dia-cell.ausente  { background: #fde8e8; }
+    .dia-cell.sin-dato { background: var(--cream); }
+    .dia-nombre { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+    .dia-num    { font-family: 'DM Serif Display', serif; font-size: 1.1rem; }
+    .dia-badge  { font-size: 0.6rem; font-weight: 700; margin-top: 4px; }
+    .dia-cell.presente .dia-badge { color: var(--success); }
+    .dia-cell.ausente  .dia-badge { color: var(--error); }
+  </style>
+</head>
+<body>
+
+<header>
+  <svg class="header-logo" viewBox="0 0 60 60" fill="none">
+    <circle cx="30" cy="30" r="28" stroke="currentColor" stroke-width="2"/>
+    <path d="M20 30 L27 37 L40 23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <div>
+    <div class="header-title">Panel de Asistencia <em style="font-style:italic;color:var(--gold)">Docente</em></div>
+    <div class="header-sub">CENS — La Matanza · Consultá, filtrá y exportá</div>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('fichajes')">📋 Fichajes</button>
+  <button class="tab-btn" onclick="switchTab('informe')">📊 Informe por docente</button>
+  <button class="tab-btn" onclick="switchTab('sedes')">📍 Por sede</button>
+</div>
+
+<main>
+
+  <!-- ══════════════ TAB: FICHAJES ══════════════ -->
+  <div id="tab-fichajes" class="tab-panel active">
+    <div class="filters">
+      <div class="filter-group">
+        <label>Desde</label>
+        <input type="date" id="f-desde" />
+      </div>
+      <div class="filter-group">
+        <label>Hasta</label>
+        <input type="date" id="f-hasta" />
+      </div>
+      <div class="filter-group">
+        <label>Docente (opcional)</label>
+        <input type="text" id="f-nombre" placeholder="Ej: María González" />
+      </div>
+      <div class="filter-group">
+        <label>Estado</label>
+        <select id="f-estado">
+          <option value="">Todos</option>
+          <option value="presente">Solo PRESENTES</option>
+          <option value="ausente">Solo AUSENTES</option>
+        </select>
+      </div>
+      <button class="btn-buscar" onclick="buscar()">Buscar</button>
+    </div>
+
+    <div class="stats" id="stats-wrap" style="display:none">
+      <div class="stat-card"><div class="stat-label">Total fichajes</div><div class="stat-value" id="stat-total">0</div></div>
+      <div class="stat-card"><div class="stat-label">Presentes</div><div class="stat-value verde" id="stat-presentes">0</div></div>
+      <div class="stat-card"><div class="stat-label">Ausentes</div><div class="stat-value rojo" id="stat-ausentes">0</div></div>
+      <div class="stat-card"><div class="stat-label">Docentes distintos</div><div class="stat-value" id="stat-docentes">0</div></div>
+    </div>
+
+    <div id="status-msg">Seleccioná un rango de fechas y hacé clic en Buscar.</div>
+    <button class="btn-export" id="btn-export" style="display:none" onclick="exportarCSV()">⬇ Exportar CSV</button>
+
+    <div class="table-wrap">
+      <table id="tabla">
+        <thead>
+          <tr>
+            <th>Docente</th><th>Fecha</th><th>Hora</th>
+            <th>Estado</th><th>Sede</th>
+            <th>Coordenadas</th><th>Distancia</th><th>GPS</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="8"><div class="empty-state"><p>Usá los filtros para ver los fichajes.</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════ TAB: INFORME POR DOCENTE ══════════════ -->
+  <div id="tab-informe" class="tab-panel">
+    <div class="filters">
+      <div class="filter-group">
+        <label>Período</label>
+        <select id="inf-periodo">
+          <option value="semana">Esta semana</option>
+          <option value="mes" selected>Este mes</option>
+          <option value="custom">Personalizado</option>
+        </select>
+      </div>
+      <div class="filter-group" id="inf-custom-desde-wrap" style="display:none">
+        <label>Desde</label>
+        <input type="date" id="inf-desde" />
+      </div>
+      <div class="filter-group" id="inf-custom-hasta-wrap" style="display:none">
+        <label>Hasta</label>
+        <input type="date" id="inf-hasta" />
+      </div>
+      <button class="btn-buscar" onclick="cargarInforme()">Generar informe</button>
+    </div>
+
+    <div id="status-msg-inf">Seleccioná el período y hacé clic en Generar informe.</div>
+
+    <div id="docente-grid" class="docente-grid"></div>
+
+    <div id="detalle-wrap" class="detalle-wrap">
+      <p class="detalle-titulo" id="detalle-titulo">—</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Fecha</th><th>Hora</th><th>Estado</th><th>Sede</th><th>Distancia</th></tr>
+          </thead>
+          <tbody id="detalle-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ TAB: POR SEDE ══════════════ -->
+  <div id="tab-sedes" class="tab-panel">
+    <div class="filters">
+      <div class="filter-group">
+        <label>Sede</label>
+        <select id="sed-sede">
+          <option value="">Todas las sedes</option>
+          <option value="sede_principal">Sede Principal – Villa Luzuriaga</option>
+          <option value="anexo_ramos_mejia">Anexo Ramos Mejía</option>
+          <option value="anexo_torrero">Anexo Torrero – Rafael Castillo</option>
+          <option value="anexo_atalaya">Anexo Atalaya – Rafael Castillo</option>
+          <option value="anexo_canada">Anexo Cañada – San Justo</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Desde</label>
+        <input type="date" id="sed-desde" />
+      </div>
+      <div class="filter-group">
+        <label>Hasta</label>
+        <input type="date" id="sed-hasta" />
+      </div>
+      <button class="btn-buscar" onclick="buscarPorSede()">Buscar</button>
+    </div>
+
+    <div id="status-msg-doc">Seleccioná una sede y rango de fechas.</div>
+    <button class="btn-export" id="btn-export-sede" style="display:none" onclick="exportarCSVSede()">⬇ Exportar CSV</button>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Docente</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Sede registrada</th><th>Distancia</th></tr>
+        </thead>
+        <tbody id="tbody-sede"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<script type="module">
+import { db } from './js/firebase-config.js';
+import { collection, query, where, orderBy, getDocs, Timestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ── Helpers de fecha ──────────────────────────────────────
+function hoy()    { return new Date(); }
+function lunes()  { const d = new Date(); d.setDate(d.getDate() - (d.getDay()||7) + 1); return d; }
+function primero(){ const d = new Date(); d.setDate(1); return d; }
+function toTs(d, endOfDay=false) {
+  const dt = new Date(d + (endOfDay ? 'T23:59:59' : 'T00:00:00'));
+  return Timestamp.fromDate(dt);
+}
+function isoFecha(d) { return d.toISOString().slice(0,10); }
+
+// ── Tabs ──────────────────────────────────────────────────
+window.switchTab = function(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+};
+
+// Fechas por defecto — semana actual
+const h = hoy(), l = lunes();
+document.getElementById('f-desde').value    = isoFecha(l);
+document.getElementById('f-hasta').value    = isoFecha(h);
+document.getElementById('sed-desde').value  = isoFecha(l);
+document.getElementById('sed-hasta').value  = isoFecha(h);
+
+// ── Período personalizado ─────────────────────────────────
+document.getElementById('inf-periodo').addEventListener('change', function() {
+  const custom = this.value === 'custom';
+  document.getElementById('inf-custom-desde-wrap').style.display = custom ? '' : 'none';
+  document.getElementById('inf-custom-hasta-wrap').style.display = custom ? '' : 'none';
+});
+
+// ── TAB FICHAJES ─────────────────────────────────────────
+let resultados = [];
+
+window.buscar = async function() {
+  const desde  = document.getElementById('f-desde').value;
+  const hasta  = document.getElementById('f-hasta').value;
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const estado = document.getElementById('f-estado').value;
+  const tbody  = document.getElementById('tbody');
+  const status = document.getElementById('status-msg');
+
+  if (!desde || !hasta) { status.textContent = '⚠ Seleccioná ambas fechas.'; return; }
+
+  status.textContent = 'Cargando…';
+  tbody.innerHTML    = '';
+
+  let q = query(
+    collection(db, 'fichajes'),
+    where('timestamp', '>=', toTs(desde)),
+    where('timestamp', '<=', toTs(hasta, true)),
+    orderBy('timestamp', 'desc')
+  );
+
+  try {
+    const snap = await getDocs(q);
+    let docs   = snap.docs.map(d => d.data());
+
+    if (nombre) docs = docs.filter(d => d.nombre?.toLowerCase().includes(nombre.toLowerCase()));
+    if (estado === 'presente') docs = docs.filter(d => d.presente === true);
+    if (estado === 'ausente')  docs = docs.filter(d => !d.presente);
+
+    resultados = docs;
+
+    if (!docs.length) {
+      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><p>No hay fichajes en ese período.</p></div></td></tr>`;
+      status.textContent = 'Sin resultados.';
+      document.getElementById('stats-wrap').style.display = 'none';
+      document.getElementById('btn-export').style.display = 'none';
+      return;
+    }
+
+    const presentes = docs.filter(d => d.presente).length;
+    const ausentes  = docs.length - presentes;
+    document.getElementById('stat-total').textContent     = docs.length;
+    document.getElementById('stat-presentes').textContent = presentes;
+    document.getElementById('stat-ausentes').textContent  = ausentes;
+    document.getElementById('stat-docentes').textContent  = new Set(docs.map(d => d.nombre)).size;
+    document.getElementById('stats-wrap').style.display   = 'grid';
+    document.getElementById('btn-export').style.display   = 'inline-block';
+
+    tbody.innerHTML = docs.map(d => `
+      <tr>
+        <td><strong>${d.nombre||'—'}</strong></td>
+        <td>${d.fecha||'—'}</td>
+        <td>${d.hora||'—'}</td>
+        <td>${d.presente
+          ? `<span class="badge-ok">✓ PRESENTE</span>`
+          : `<span class="badge-no">✗ AUSENTE</span>`}</td>
+        <td>${d.sedeNombre
+          ? `<span class="badge-sede">${d.sedeNombre.replace(' – ',' ')}</span>`
+          : '—'}</td>
+        <td style="font-size:0.75rem;color:var(--muted)">${d.lat ? `${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}` : '—'}</td>
+        <td>${d.distancia != null ? d.distancia + ' m' : '—'}</td>
+        <td>${d.geoOk ? `<span class="badge-ok">GPS</span>` : `<span class="badge-no">Sin GPS</span>`}</td>
+      </tr>`).join('');
+
+    status.textContent = `${docs.length} fichaje${docs.length!==1?'s':''} · ${presentes} presentes / ${ausentes} ausentes`;
+
+  } catch (err) {
+    status.textContent = `Error: ${err.message}`;
+    console.error(err);
+  }
+};
+
+window.exportarCSV = function() {
+  if (!resultados.length) return;
+  const rows = resultados.map(d =>
+    `"${d.nombre}","${d.fecha}","${d.hora}","${d.presente?'PRESENTE':'AUSENTE'}","${d.sedeNombre||''}","${d.lat??''}","${d.lng??''}","${d.distancia??''}","${d.geoOk?'Sí':'No'}"`
+  );
+  descargarCSV(
+    'Docente,Fecha,Hora,Estado,Sede,Latitud,Longitud,Distancia CENS (m),GPS OK',
+    rows,
+    `fichajes_${new Date().toISOString().slice(0,10)}`
+  );
+};
+
+// ── TAB INFORME POR DOCENTE ───────────────────────────────
+let informeData = [];
+let docenteSeleccionado = null;
+
+window.cargarInforme = async function() {
+  const periodo = document.getElementById('inf-periodo').value;
+  const status  = document.getElementById('status-msg-inf');
+  let desde, hasta;
+
+  if (periodo === 'semana') {
+    desde = isoFecha(lunes());
+    hasta = isoFecha(hoy());
+  } else if (periodo === 'mes') {
+    desde = isoFecha(primero());
+    hasta = isoFecha(hoy());
+  } else {
+    desde = document.getElementById('inf-desde').value;
+    hasta = document.getElementById('inf-hasta').value;
+    if (!desde || !hasta) { status.textContent = '⚠ Completá el rango personalizado.'; return; }
+  }
+
+  status.textContent = 'Cargando…';
+  document.getElementById('docente-grid').innerHTML = '';
+  document.getElementById('detalle-wrap').classList.remove('visible');
+
+  const q = query(
+    collection(db, 'fichajes'),
+    where('timestamp', '>=', toTs(desde)),
+    where('timestamp', '<=', toTs(hasta, true)),
+    orderBy('timestamp', 'asc')
+  );
+
+  try {
+    const snap = await getDocs(q);
+    informeData = snap.docs.map(d => d.data());
+
+    if (!informeData.length) {
+      status.textContent = 'No hay fichajes en ese período.';
+      return;
+    }
+
+    // Agrupar por docente
+    const porDocente = {};
+    informeData.forEach(d => {
+      if (!porDocente[d.nombre]) porDocente[d.nombre] = [];
+      porDocente[d.nombre].push(d);
+    });
+
+    const grid = document.getElementById('docente-grid');
+    grid.innerHTML = '';
+
+    Object.entries(porDocente)
+      .sort((a,b) => a[0].localeCompare(b[0]))
+      .forEach(([nombre, fichajesDoc]) => {
+        const presentes = fichajesDoc.filter(f => f.presente).length;
+        const ausentes  = fichajesDoc.length - presentes;
+        const pct = fichajesDoc.length ? Math.round(presentes/fichajesDoc.length*100) : 0;
+
+        const card = document.createElement('div');
+        card.className = 'docente-card';
+        card.innerHTML = `
+          <div class="docente-card-nombre">👤 ${nombre}</div>
+          <div class="docente-mini-stats">
+            <div class="dms"><span class="n verde">${presentes}</span><span class="l">Presentes</span></div>
+            <div class="dms"><span class="n rojo">${ausentes}</span><span class="l">Ausentes</span></div>
+            <div class="dms"><span class="n">${fichajesDoc.length}</span><span class="l">Total</span></div>
+            <div class="dms"><span class="n">${pct}%</span><span class="l">Asistencia</span></div>
+          </div>`;
+        card.addEventListener('click', () => mostrarDetalle(nombre, fichajesDoc, card));
+        grid.appendChild(card);
+      });
+
+    const nd = Object.keys(porDocente).length;
+    status.textContent = `${nd} docente${nd!==1?'s':''} · ${desde} al ${hasta}`;
+
+  } catch(err) {
+    status.textContent = `Error: ${err.message}`;
+    console.error(err);
+  }
+};
+
+function mostrarDetalle(nombre, fichajes, card) {
+  document.querySelectorAll('.docente-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  docenteSeleccionado = { nombre, fichajes };
+
+  document.getElementById('detalle-titulo').textContent = `Detalle de ${nombre}`;
+  const tbody = document.getElementById('detalle-tbody');
+
+  tbody.innerHTML = fichajes.map(d => `
+    <tr>
+      <td>${d.fecha||'—'}</td>
+      <td>${d.hora||'—'}</td>
+      <td>${d.presente
+        ? `<span class="badge-ok">✓ PRESENTE</span>`
+        : `<span class="badge-no">✗ AUSENTE</span>`}</td>
+      <td>${d.sedeNombre
+        ? `<span class="badge-sede">${d.sedeNombre.replace(' – ',' ')}</span>`
+        : '—'}</td>
+      <td>${d.distancia != null ? d.distancia + ' m' : '—'}</td>
+    </tr>`).join('');
+
+  document.getElementById('detalle-wrap').classList.add('visible');
+  document.getElementById('detalle-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── TAB POR SEDE ──────────────────────────────────────────
+let resultadosSede = [];
+
+window.buscarPorSede = async function() {
+  const sedeId  = document.getElementById('sed-sede').value;
+  const desde   = document.getElementById('sed-desde').value;
+  const hasta   = document.getElementById('sed-hasta').value;
+  const status  = document.getElementById('status-msg-doc');
+  const tbody   = document.getElementById('tbody-sede');
+
+  if (!desde || !hasta) { status.textContent = '⚠ Seleccioná ambas fechas.'; return; }
+  status.textContent = 'Cargando…';
+  tbody.innerHTML    = '';
+
+  let q = query(
+    collection(db, 'fichajes'),
+    where('timestamp', '>=', toTs(desde)),
+    where('timestamp', '<=', toTs(hasta, true)),
+    orderBy('timestamp', 'desc')
+  );
+
+  try {
+    const snap = await getDocs(q);
+    let docs   = snap.docs.map(d => d.data());
+    if (sedeId) docs = docs.filter(d => d.sedeId === sedeId);
+
+    resultadosSede = docs;
+    document.getElementById('btn-export-sede').style.display = docs.length ? 'inline-block' : 'none';
+
+    if (!docs.length) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>Sin resultados.</p></div></td></tr>`;
+      status.textContent = 'Sin resultados.';
+      return;
+    }
+
+    tbody.innerHTML = docs.map(d => `
+      <tr>
+        <td><strong>${d.nombre||'—'}</strong></td>
+        <td>${d.fecha||'—'}</td>
+        <td>${d.hora||'—'}</td>
+        <td>${d.presente
+          ? `<span class="badge-ok">✓ PRESENTE</span>`
+          : `<span class="badge-no">✗ AUSENTE</span>`}</td>
+        <td>${d.sedeNombre
+          ? `<span class="badge-sede">${d.sedeNombre.replace(' – ',' ')}</span>`
+          : '—'}</td>
+        <td>${d.distancia != null ? d.distancia + ' m' : '—'}</td>
+      </tr>`).join('');
+
+    status.textContent = `${docs.length} fichaje${docs.length!==1?'s':''}.`;
+
+  } catch(err) {
+    status.textContent = `Error: ${err.message}`;
+    console.error(err);
+  }
+};
+
+window.exportarCSVSede = function() {
+  if (!resultadosSede.length) return;
+  const rows = resultadosSede.map(d =>
+    `"${d.nombre}","${d.fecha}","${d.hora}","${d.presente?'PRESENTE':'AUSENTE'}","${d.sedeNombre||''}","${d.distancia??''}"`
+  );
+  descargarCSV('Docente,Fecha,Hora,Estado,Sede,Distancia (m)', rows, `sede_${new Date().toISOString().slice(0,10)}`);
+};
+
+// ── Descarga CSV ──────────────────────────────────────────
+function descargarCSV(header, rows, nombre) {
+  const csv  = [header, ...rows].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url; a.download = nombre + '.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Colores para stats inline
+document.querySelectorAll('.verde').forEach(el => el.style.color = 'var(--success)');
+document.querySelectorAll('.rojo').forEach(el =>  el.style.color = 'var(--error)');
+</script>
+
+</body>
+</html>
