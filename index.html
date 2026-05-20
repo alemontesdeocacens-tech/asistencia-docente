@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="CENS 451 La Matanza · Educación Secundaria para Adultos" />
+<meta property="og:description" content="Terminá tu secundario con horarios pensados para trabajadores y familias. Una sede y 4 anexos en La Matanza. Inscribite online y hablá con Valeria, tu asistente virtual." />
+<meta property="og:image" content="https://cens451asistente.vercel.app/valeria-preview.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://cens451asistente.vercel.app" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="CENS 451 La Matanza · Educación Secundaria para Adultos" />
+<meta name="twitter:description" content="Terminá tu secundario con horarios pensados para trabajadores y familias. Inscribite online y hablá con Valeria." />
+<meta name="twitter:image" content="https://cens451asistente.vercel.app/valeria-preview.png" />
+<title>CENS 451 · La Matanza</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0f2546;--blue:#1a4fa0;--blue2:#2563eb;--sky:#dbeafe;--sky2:#eff6ff;
+  --gold:#c9a84c;--gold2:#fdf3dc;
+  --green:#059669;--green2:#d1fae5;
+  --red2:#fee2e2;--red:#991b1b;
+  --slate:#64748b;--slate2:#f1f5f9;--slate3:#e2e8f0;--slate4:#94a3b8;
+  --white:#fff;--ink:#0f172a;--ink2:#334155;
+  --r:16px;--r2:10px;
+  --sh:0 4px 32px rgba(15,37,70,.10);
+}
+body{font-family:'DM Sans',sans-serif;background:#f0f4fa;color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+/* ── NAV ── */
+.nav{background:var(--navy);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.22)}
+.nav-brand{display:flex;align-items:center;gap:13px}
+.nav-seal{width:40px;height:40px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0}
+.nav-seal span{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;color:var(--navy);line-height:1.1}
+.nav-name{color:#fff;font-weight:700;font-size:16px;line-height:1.2}
+.nav-name small{font-size:11px;font-weight:400;opacity:.65;display:block}
+.nav-links{display:flex;gap:4px}
+.nl{background:transparent;border:none;color:rgba(255,255,255,.65);padding:7px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:.2s}
+.nl:hover,.nl.active{background:rgba(255,255,255,.12);color:#fff}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(140deg,var(--navy) 0%,#1a3a7a 55%,#1e4db7 100%);min-height:480px;display:grid;grid-template-columns:1fr 280px;align-items:end;padding:52px 48px 0;position:relative;overflow:hidden;gap:0}
+.hero-geo{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hero-geo::before{content:'';position:absolute;right:-120px;top:-120px;width:520px;height:520px;border:1.5px solid rgba(201,168,76,.15);border-radius:50%}
+.hero-geo::after{content:'';position:absolute;right:-60px;top:-60px;width:320px;height:320px;border:1px solid rgba(201,168,76,.1);border-radius:50%}
+.hero-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:.4}
+.hero-text{z-index:2;padding-bottom:52px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:11px;font-weight:700;letter-spacing:1.5px;padding:5px 14px;border-radius:20px;margin-bottom:20px;text-transform:uppercase}
+.hero-title{font-family:'DM Serif Display',serif;font-size:48px;color:#fff;line-height:1.1;margin-bottom:16px}
+.hero-title em{color:var(--gold);font-style:italic}
+.hero-body{font-size:15px;color:rgba(255,255,255,.75);line-height:1.7;max-width:440px;margin-bottom:30px}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:12px 24px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.2s;text-decoration:none}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:#e0b94f;transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,.35)}
+.btn-ghost{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.25)}
+.btn-ghost:hover{background:rgba(255,255,255,.18)}
+
+/* ── VALERIA SVG ── */
+.valeria-wrap{position:relative;z-index:2;align-self:flex-end;display:flex;flex-direction:column;align-items:center;margin-left:-40px}
+.valeria-wrap img{height:480px}
+.valeria-bubble{background:#fff;border-radius:18px 18px 4px 18px;padding:11px 15px;font-size:12.5px;color:var(--ink);font-weight:500;line-height:1.45;box-shadow:0 8px 32px rgba(0,0,0,.16);max-width:210px;position:absolute;top:-70px;right:-20px;z-index:10;transition:opacity .5s}
+.valeria-bubble strong{color:var(--blue2)}
+.valeria-bubble::after{content:'';position:absolute;bottom:-9px;right:22px;border:5px solid transparent;border-top:9px solid #fff}
+
+/* ── QUICK CARDS ── */
+.qcards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:28px 32px 0;margin-top:-38px;position:relative;z-index:5}
+.qcard{background:#fff;border-radius:var(--r);padding:22px;box-shadow:var(--sh);border:1px solid var(--slate3);cursor:pointer;transition:.22s;display:flex;flex-direction:column;gap:8px}
+.qcard:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(15,37,70,.14)}
+.qcard-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.qcard-t{font-size:14px;font-weight:700;color:var(--ink)}
+.qcard-d{font-size:12px;color:var(--slate);line-height:1.5}
+
+/* ── CHAT ── */
+.chat-wrap{display:grid;grid-template-columns:1fr 280px;gap:20px;padding:28px 32px 36px}
+.chatbox{background:#fff;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;border:1px solid var(--slate3)}
+.chat-hdr{background:var(--navy);padding:14px 18px;display:flex;align-items:center;gap:12px}
+.chat-avatar{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);overflow:hidden;position:relative;flex-shrink:0}
+.chat-status{width:8px;height:8px;background:#22c55e;border-radius:50%;position:absolute;bottom:1px;right:1px;box-shadow:0 0 0 2px var(--navy)}
+.chat-hdr-info h4{color:#fff;font-size:14px;font-weight:700}
+.chat-hdr-info p{color:rgba(255,255,255,.6);font-size:11px}
+.chat-msgs{height:320px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#fafbfd}
+.msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.55;animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg-bot{background:#fff;color:var(--ink);border-radius:4px 16px 16px 16px;align-self:flex-start;border:1px solid var(--slate3);box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.msg-user{background:var(--blue2);color:#fff;border-radius:16px 16px 4px 16px;align-self:flex-end}
+.chat-profile{padding:10px 16px;border-top:1px solid var(--slate3);background:#f8fafc}
+.chat-profile p{font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.profile-btns{display:flex;gap:6px}
+.pbtn{flex:1;padding:8px 6px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--slate3);background:#fff;color:var(--ink2);transition:.18s;text-align:center}
+.pbtn:hover,.pbtn.sel{background:var(--navy);color:#fff;border-color:var(--navy)}
+.chat-qr{display:flex;flex-wrap:wrap;gap:5px;padding:8px 14px}
+.qr{background:var(--sky);color:var(--blue2);border:none;border-radius:20px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
+.qr:hover{background:var(--blue2);color:#fff}
+.chat-inp{display:flex;gap:7px;padding:10px 12px;border-top:1px solid var(--slate3)}
+.chat-inp input{flex:1;border:1.5px solid var(--slate3);border-radius:8px;padding:9px 13px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:.2s}
+.chat-inp input:focus{border-color:var(--blue2)}
+.chat-inp button{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:9px 16px;cursor:pointer;font-weight:700;font-size:12px;font-family:'DM Sans',sans-serif;transition:.18s}
+.chat-inp button:hover{background:var(--blue2)}
+
+/* INFO ASIDE */
+.info-aside>div{background:#fff;border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--slate3);padding:18px;margin-bottom:14px}
+.info-aside h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--ink)}
+.irow{display:flex;gap:8px;align-items:flex-start;margin-bottom:9px;font-size:12px;color:var(--ink2);line-height:1.45}
+.irow .ic{font-size:15px;flex-shrink:0;margin-top:1px}
+
+/* ── FORM ── */
+.fcard{background:#fff;border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--slate3);padding:28px;max-width:680px;margin:0 auto}
+.fcard-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px}
+.fcard-sub{font-size:12px;color:var(--slate);margin-bottom:22px}
+.fsec{margin-bottom:20px}
+.fsec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--blue2);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--sky)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.ff{display:flex;flex-direction:column;gap:3px}
+.ff.full{grid-column:1/-1}
+.ff label{font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.5px}
+.ff input,.ff select,.ff textarea{border:1.5px solid var(--slate3);border-radius:8px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;transition:.2s;background:#fff}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(37,99,235,.07)}
+.ff textarea{resize:vertical;min-height:72px}
+.sede-tag{background:var(--sky2);border:1.5px solid var(--sky);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:12px;color:var(--blue2);font-weight:600;display:none}
+.btn-sub{background:var(--navy);color:#fff;border:none;border-radius:10px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;transition:.2s}
+.btn-sub:hover{background:var(--blue2);transform:translateY(-1px)}
+.success-box{background:var(--green2);border:1.5px solid #a7f3d0;border-radius:10px;padding:16px;text-align:center;font-size:13px;font-weight:700;color:#065f46;display:none;margin-top:12px}
+
+/* ── ALUMNO ── */
+.alumno-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:800px;margin:0 auto}
+.scard{background:#fff;border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--slate3);padding:22px}
+.scard h3{font-size:15px;font-weight:700;margin-bottom:5px}
+.scard p{font-size:12px;color:var(--slate);margin-bottom:14px}
+.search-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}
+.search-row input{border:1.5px solid var(--slate3);border-radius:8px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:.2s}
+.search-row input:focus{border-color:var(--blue2)}
+.search-row button{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap}
+.rtable{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}
+.rtable th{background:var(--slate2);padding:7px 10px;text-align:left;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--slate)}
+.rtable td{padding:9px 10px;border-bottom:1px solid var(--slate3)}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.3px}
+.b-ok{background:#dcfce7;color:#166534}
+.b-no{background:#fee2e2;color:#991b1b}
+.b-dig{background:#dbeafe;color:#1e40af}
+
+/* ── PAGE ── */
+.page{display:none;padding:24px 32px}
+.page.on{display:block}
+.ptitle{font-family:'DM Serif Display',serif;font-size:26px;margin-bottom:4px}
+.psub{font-size:13px;color:var(--slate);margin-bottom:22px}
+
+/* SEDES */
+.sedes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:900px}
+.sede-card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--slate3);padding:18px}
+.sede-card h4{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.sede-card p{font-size:12px;color:var(--slate);line-height:1.5}
+.sede-card .chip{display:inline-block;background:var(--sky);color:var(--blue2);border-radius:12px;padding:2px 8px;font-size:10px;font-weight:700;margin:2px 2px 0 0}
+
+/* ── MOBILE ── */
+@media(max-width:700px){
+  .nav{padding:0 12px;height:52px;flex-wrap:nowrap}
+  .nav-brand{padding:0;flex-shrink:0}
+  .nav-name{display:none}
+  .nav-seal{width:34px;height:34px;flex-shrink:0}
+  .nav-seal span{font-size:7px}
+  .nav-links{overflow-x:auto;padding:0;gap:2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:1}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nl{font-size:12px;padding:6px 10px;white-space:nowrap}
+  .hero{grid-template-columns:1fr;padding:32px 18px 0;min-height:auto}
+  .hero-title{font-size:32px}
+  .hero-body{font-size:14px;max-width:100%}
+  .valeria-wrap{display:flex;transform:scale(0.85);transform-origin:center bottom;margin-top:-60px;height:260px}
+  .valeria-bubble{top:auto;bottom:140px;right:0px;font-size:11px;padding:8px 11px;max-width:170px}
+  .qcards{grid-template-columns:1fr;padding:20px 16px 0;margin-top:-20px;gap:10px}
+  .chat-wrap{grid-template-columns:1fr;padding:16px;gap:14px}
+  .chat-msgs{height:260px}
+  .profile-btns{flex-wrap:wrap}
+  .pbtn{font-size:10px;padding:7px 4px}
+  .info-aside{display:none}
+  .page{padding:16px}
+  .fgrid{grid-template-columns:1fr}
+  .ff.full{grid-column:1}
+  .fcard{padding:18px}
+  .alumno-grid{grid-template-columns:1fr}
+  .search-row{grid-template-columns:1fr 1fr;gap:6px}
+  .search-row button{grid-column:1/-1}
+  .sedes-grid{grid-template-columns:1fr}
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-seal"><span>CENS</span><span>451</span></div>
+    <div class="nav-name">CENS 451 <span>La Matanza · Educación de Adultos</span></div>
+  </div>
+  <div class="nav-links">
+    <button class="nl active" onclick="show('home')">Inicio</button>
+    <button class="nl" onclick="show('inscripcion')">Preinscripción</button>
+    <button class="nl" onclick="show('alumno')">Panel Alumno</button>
+    <button class="nl" onclick="show('sedes')">Sedes</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="pg-home" class="page on">
+  <div class="hero">
+    <div class="hero-geo">
+      <div class="hero-dot" style="top:80px;left:12%"></div>
+      <div class="hero-dot" style="top:200px;left:5%"></div>
+      <div class="hero-dot" style="bottom:80px;left:20%"></div>
+    </div>
+    <div class="hero-text">
+      <div class="hero-eyebrow">📚 Educación secundaria para adultos</div>
+      <h1 class="hero-title">Terminá tu secundario.<br><em>Tu futuro</em> empieza acá.</h1>
+      <p class="hero-body">Horarios pensados para trabajadores y familias. Docentes comprometidos. Una sede y 4 anexos en La Matanza para que elijas la más cercana a tu casa.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-gold" onclick="show('inscripcion')">📋 Inscribirme ahora</button>
+        <button class="btn btn-ghost" onclick="show('home');setTimeout(function(){var el=document.getElementById('chat-sect');if(el)el.scrollIntoView({behavior:'smooth'});},100)">💬 Hablar con Valeria</button>
+      </div>
+    </div>
+    <!-- VALERIA REDISEÑADA — alta y estilizada -->
+    <div class="valeria-wrap">
+      <div class="valeria-bubble" id="vbubble">¡Hola! Soy <strong>Valeria</strong>, tu asistente del CENS 451. ¿Sos alumno/a o docente? 😊</div>
+      <img src="valeria.png" alt="Valeria - Asistente CENS 451" style="height:420px;object-fit:contain;object-position:bottom;filter:drop-shadow(0 8px 24px rgba(0,0,0,.18))">
+    </div>
+  </div>
+
+  <!-- QUICK CARDS -->
+  <div class="qcards">
+    <div class="qcard" onclick="show('inscripcion')">
+      <div class="qcard-ico" style="background:#dbeafe">📋</div>
+      <div class="qcard-t">Preinscripción online</div>
+      <div class="qcard-d">Completá el formulario y te asignamos la sede más cercana a tu domicilio.</div>
+    </div>
+    <div class="qcard" onclick="show('alumno')">
+      <div class="qcard-ico" style="background:#d1fae5">🎓</div>
+      <div class="qcard-t">Consultar analítico</div>
+      <div class="qcard-d">Verificá por DNI o apellido si tu analítico ya está disponible.</div>
+    </div>
+    <div class="qcard" onclick="show('sedes')">
+      <div class="qcard-ico" style="background:#fdf3dc">📍</div>
+      <div class="qcard-t">Nuestras sedes</div>
+      <div class="qcard-d">5 sedes en La Matanza. Encontrá la más cercana a tu barrio.</div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div id="chat-sect" class="chat-wrap">
+    <div class="chatbox">
+      <div class="chat-hdr">
+        <div class="chat-avatar">
+          <img src="valeria.png" alt="Valeria" style="width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%">
+          <div class="chat-status"></div>
+        </div>
+        <div class="chat-hdr-info">
+          <h4>Valeria — Asistente CENS 451</h4>
+          <p>En línea · Responde al instante</p>
+        </div>
+      </div>
+      <div class="chat-msgs" id="chatMsgs">
+        <div class="msg msg-bot" id="msgBienvenida">¡Hola! 👋 Soy <b>Valeria</b>. Antes de continuar, ¿con cuál de estas opciones te identificás?</div>
+      </div>
+      <div class="chat-profile">
+        <p>Soy...</p>
+        <div class="profile-btns">
+          <button class="pbtn" onclick="setProfile('alumno')">🎓 Futuro/a alumno/a</button>
+          <button class="pbtn" onclick="setProfile('egresado')">📄 Egresado/a del CENS</button>
+          <button class="pbtn" onclick="setProfile('docente')">👩‍🏫 Docente</button>
+        </div>
+      </div>
+      <div class="chat-qr" id="chatQR"></div>
+      <div class="chat-inp">
+        <input type="text" id="chatInp" placeholder="Escribí tu consulta..." onkeydown="if(event.key==='Enter')sendMsg()">
+        <button onclick="sendMsg()">Enviar</button>
+      </div>
+    </div>
+    <div class="info-aside">
+      <div>
+        <h4>📌 CENS 451 · La Matanza</h4>
+        <div class="irow"><span class="ic">📍</span><span id="ai-dir"><b>Sede principal:</b> Camacuá 3407 · Villa Luzuriaga</span></div>
+        <div class="irow"><span class="ic">⏰</span><span id="ai-hora"><b>Turnos:</b> Tarde 14–18h · Noche 18–22h</span></div>
+        <div class="irow"><span class="ic">📅</span><span id="ai-periodo"><b>Inscripción:</b> Todo el año con cupo</span></div>
+        <div class="irow"><span class="ic">📞</span><span><b>Tel/WA:</b> 11 5312 6676</span></div>
+        <div class="irow"><span class="ic">📱</span><span><b>Instagram:</b> <a href="https://instagram.com/cens.451" target="_blank" style="color:var(--blue2)">@cens.451</a></span></div>
+        <div class="irow"><span class="ic">🎓</span><span><b>Título:</b> Bachiller para adultos</span></div>
+      </div>
+      <div>
+        <h4>🏫 Sedes disponibles</h4>
+        <div class="irow"><span class="ic">⭐</span><span><b>Sede Central:</b> Camacuá 3407 · Villa Luzuriaga</span></div>
+        <div class="irow"><span class="ic">📍</span><span><b>Anexo Veteranos:</b> Bolívar 1682 · Ramos Mejía</span></div>
+        <div class="irow"><span class="ic">📍</span><span><b>Anexo Torero:</b> Coronel Aguirre 2784 · Rafael Castillo</span></div>
+        <div class="irow"><span class="ic">📍</span><span><b>Anexo Atalaya:</b> Del Bañado 10 · Rafael Castillo</span></div>
+        <div class="irow"><span class="ic">📍</span><span><b>Anexo Canadá:</b> Canadá 4664 · San Justo</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PREINSCRIPCIÓN -->
+<div id="pg-inscripcion" class="page">
+  <div class="ptitle">📋 Preinscripción</div>
+  <div class="psub">Completá tus datos. Te asignamos la sede más cercana automáticamente.</div>
+  <div class="fcard">
+    <div class="fcard-title">Formulario de preinscripción</div>
+    <div class="fcard-sub">Todos los campos con * son obligatorios. La información es confidencial.</div>
+    <div class="fsec">
+      <div class="fsec-title">👤 Datos personales</div>
+      <div class="fgrid">
+        <div class="ff"><label>Apellido *</label><input type="text" id="f-ap" placeholder="Ej: González"></div>
+        <div class="ff"><label>Nombre/s *</label><input type="text" id="f-nm" placeholder="Ej: María Laura"></div>
+        <div class="ff"><label>DNI *</label><input type="text" id="f-dni" placeholder="Sin puntos: 32456789"></div>
+        <div class="ff"><label>Fecha de nacimiento *</label><input type="date" id="f-fec"></div>
+        <div class="ff"><label>Teléfono / WhatsApp *</label><input type="text" id="f-tel" placeholder="11 5432 1098"></div>
+        <div class="ff"><label>Email</label><input type="email" id="f-mail" placeholder="correo@gmail.com"></div>
+      </div>
+    </div>
+    <div class="fsec">
+      <div class="fsec-title">📍 Domicilio</div>
+      <div class="fgrid">
+        <div class="ff full"><label>Calle y número *</label><input type="text" id="f-calle" placeholder="Ej: Av. Rivadavia 1234"></div>
+        <div class="ff"><label>Localidad / Barrio *</label>
+          <select id="f-loc" onchange="asignarSede()">
+            <option value="">-- Seleccioná --</option>
+            <option value="Villa Luzuriaga">Villa Luzuriaga</option>
+            <option value="Villa Madero">Villa Madero</option>
+            <option value="Aldo Bonzi">Aldo Bonzi</option>
+            <option value="Tapiales">Tapiales</option>
+            <option value="Ciudad Evita">Ciudad Evita</option>
+            <option value="Ramos Mejía">Ramos Mejía</option>
+            <option value="San Justo">San Justo</option>
+            <option value="Isidro Casanova">Isidro Casanova</option>
+            <option value="Rafael Castillo">Rafael Castillo</option>
+            <option value="Virrey del Pino">Virrey del Pino</option>
+            <option value="González Catán">González Catán</option>
+            <option value="La Tablada">La Tablada</option>
+            <option value="Laferrere">Laferrere</option>
+            <option value="Otro">Otra localidad</option>
+          </select>
+        </div>
+        <div class="ff"><label>Código Postal</label><input type="text" id="f-cp" placeholder="Ej: 1752"></div>
+      </div>
+      <div class="sede-tag" id="sedeTag"></div>
+    </div>
+    <div class="fsec">
+      <div class="fsec-title">🎓 Datos académicos</div>
+      <div class="fgrid">
+        <div class="ff"><label>Último año cursado *</label>
+          <select id="f-año">
+            <option value="">-- Seleccioná --</option>
+            <option>No terminé la primaria</option>
+            <option>Primaria completa</option>
+            <option>1° año secundaria</option>
+            <option>2° año secundaria</option>
+            <option>3° año secundaria</option>
+            <option>4° año secundaria</option>
+            <option>5° año secundaria</option>
+          </select>
+        </div>
+        <div class="ff"><label>Turno preferido *</label>
+          <select id="f-turno">
+            <option value="">-- Seleccioná --</option>
+            <option>Tarde (14:00–18:00 hs)</option>
+            <option>Noche (18:00–22:00 hs)</option>
+            <option>Sin preferencia</option>
+          </select>
+        </div>
+        <div class="ff full"><label>Observaciones (opcional)</label>
+          <textarea id="f-obs" placeholder="Contanos brevemente tu situación: si trabajás, si tenés hijos, etc."></textarea>
+        </div>
+      </div>
+    </div>
+    <button class="btn-sub" onclick="enviarForm()">✅ Enviar preinscripción</button>
+    <div class="success-box" id="fOk">🎉 ¡Preinscripción recibida! Te contactaremos en los próximos días hábiles por WhatsApp o email para confirmar tu vacante. ¡Bienvenido/a al CENS 451!</div>
+  </div>
+</div>
+
+<!-- PANEL ALUMNO -->
+<div id="pg-alumno" class="page">
+  <div class="ptitle">🎓 Panel del Alumno</div>
+  <div class="psub">Consultá el estado de tus analíticos.</div>
+  <div class="alumno-grid">
+    <div class="scard" style="grid-column:1/-1">
+      <h3>🔍 Buscar analítico</h3>
+      <p>Ingresá tu DNI y/o apellido para consultar tus analíticos.</p>
+      <div class="search-row">
+        <input type="text" id="aDNI" placeholder="DNI (sin puntos)">
+        <input type="text" id="aApe" placeholder="Apellido">
+        <button onclick="buscar()">Buscar</button>
+      </div>
+      <div id="aResult"></div>
+    </div>
+    <div class="scard">
+      <h3>📊 Analítico Parcial</h3>
+      <p>Materias aprobadas hasta el momento. Válido para trámites laborales o educativos parciales. Se carga desde el panel directivo.</p>
+    </div>
+    <div class="scard">
+      <h3>💻 Analítico Final Digital</h3>
+      <p>Título final con firma electrónica oficial. Validez nacional. Se descarga desde secretaría o en formato digital.</p>
+    </div>
+    <div class="scard" style="grid-column:1/-1">
+      <h3>📃 Analítico Final en Papel</h3>
+      <p>Documento físico impreso y firmado. Retirá en secretaría presentando tu DNI. La secretaría te avisa cuando está listo.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SEDES -->
+<div id="pg-sedes" class="page">
+  <div class="ptitle">📍 Nuestras Sedes</div>
+  <div class="psub">5 sedes en La Matanza para que elijas la más cercana a tu casa.</div>
+  <div class="sedes-grid">
+    <div class="sede-card">
+      <h4>⭐ Sede Central</h4>
+      <p><b>Camacuá 3407</b><br>Villa Luzuriaga · La Matanza</p>
+      <div style="margin-top:8px">
+        <span class="chip">Villa Luzuriaga</span><span class="chip">Ramos Mejía</span><span class="chip">San Justo</span>
+      </div>
+    </div>
+    <div class="sede-card">
+      <h4>📍 Anexo Veteranos</h4>
+      <p><b>Bolívar 1682</b><br>Ramos Mejía · La Matanza</p>
+      <div style="margin-top:8px"><span class="chip">Ramos Mejía</span><span class="chip">Morón</span><span class="chip">Haedo</span><span class="chip">San Justo</span></div>
+    </div>
+    <div class="sede-card">
+      <h4>📍 Anexo Torero</h4>
+      <p><b>Coronel Aguirre 2784</b><br>Rafael Castillo · La Matanza</p>
+      <div style="margin-top:8px"><span class="chip">Rafael Castillo</span><span class="chip">Isidro Casanova</span></div>
+    </div>
+    <div class="sede-card">
+      <h4>📍 Anexo Atalaya</h4>
+      <p><b>Del Bañado 10</b><br>Rafael Castillo · La Matanza</p>
+      <div style="margin-top:8px"><span class="chip">Isidro Casanova</span></div>
+    </div>
+    <div class="sede-card">
+      <h4>📍 Anexo Canadá</h4>
+      <p><b>Canadá 4664</b><br>San Justo · La Matanza</p>
+      <div style="margin-top:8px"><span class="chip">San Justo</span><span class="chip">Laferrere</span><span class="chip">Ciudad Evita</span><span class="chip">Isidro Casanova</span><span class="chip">Gregorio de Laferrere</span></div>
+    </div>
+  </div>
+  <div style="margin-top:20px;background:#fff;border-radius:14px;padding:18px;box-shadow:var(--sh);border:1px solid var(--slate3);max-width:900px">
+    <p style="font-size:13px;color:var(--slate)">📞 <b>Consultas generales:</b> 11 5312 6676 &nbsp;|&nbsp; 📱 <b>Instagram:</b> <a href="https://instagram.com/cens.451" target="_blank" style="color:var(--blue2)">@cens.451</a></p>
+  </div>
+</div>
+
+<script type="module">
+// ── DATOS SEDES ──
+var SEDES = {
+  'Villa Luzuriaga':{n:'Sede Central',d:'Camacuá 3407 · Villa Luzuriaga'},
+  'Villa Madero':{n:'Sede Central',d:'Camacuá 3407 · Villa Luzuriaga'},
+  'Aldo Bonzi':{n:'Sede Central',d:'Camacuá 3407 · Villa Luzuriaga'},
+  'Tapiales':{n:'Sede Central',d:'Camacuá 3407 · Villa Luzuriaga'},
+  'Ciudad Evita':{n:'Sede Central',d:'Camacuá 3407 · Villa Luzuriaga'},
+  'Ramos Mejía':{n:'Anexo Veteranos',d:'Bolívar 1682 · Ramos Mejía'},
+  'La Tablada':{n:'Anexo Veteranos',d:'Bolívar 1682 · Ramos Mejía'},
+  'Rafael Castillo':{n:'Anexo Torero',d:'Coronel Aguirre 2784 · Rafael Castillo'},
+  'Isidro Casanova':{n:'Anexo Torero',d:'Coronel Aguirre 2784 · Rafael Castillo'},
+  'Virrey del Pino':{n:'Anexo Atalaya',d:'Del Bañado 10 · Rafael Castillo'},
+  'San Justo':{n:'Anexo Canadá',d:'Canadá 4664 · San Justo'},
+  'González Catán':{n:'Anexo Canadá',d:'Canadá 4664 · San Justo'},
+  'Laferrere':{n:'Anexo Canadá',d:'Canadá 4664 · San Justo'},
+  'Otro':{n:'Sede Central (consultar reasignación)',d:'Camacuá 3407 · Villa Luzuriaga'}
+};
+
+// ── FIREBASE ──
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCxMh6pKHWr9YM_kXlyS26fHOAGHh1Epqc",
+  authDomain: "cens451-asistente.firebaseapp.com",
+  projectId: "cens451-asistente",
+  storageBucket: "cens451-asistente.firebasestorage.app",
+  messagingSenderId: "44655214447",
+  appId: "1:44655214447:web:ad05f549de92abfaee329a"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ── ANALÍTICOS (desde Firestore) ──
+var ANALITICOS = {parciales:[], digital:[], papel:[]};
+
+// ── CONFIG desde Firestore ──
+var CFG = {horarios:[{n:'Tarde',h:'14:00–18:00 hs',d:'Lunes a viernes'},{n:'Noche',h:'18:00–22:00 hs',d:'Lunes a viernes'}], faq:[], docsLinks:[], archivosDocente:[], chips:{alumno:[['⏰ Horarios','¿Cuáles son los horarios?'],['📍 Sede más cercana','¿Qué sede me queda más cerca?'],['📄 Documentos','¿Qué documentos necesito?'],['💰 Es gratuito?','¿El CENS es gratuito?'],['📋 Inscribirme','¿Cómo me inscribo?']],egresado:[['🔍 Mi analítico','¿Cómo consulto mi analítico?'],['📃 Retiro en papel','¿Cómo retiro el analítico en papel?'],['📞 Contacto','¿Cómo los contacto?']],docente:[['📝 Proyecto anual','¿Cómo envío el proyecto anual?'],['🔄 Actualizar datos','¿Cómo actualizo mis datos?'],['📁 Archivos','¿Qué archivos subió la directora?'],['📞 Contacto','¿Cómo los contacto?']]}};
+window.VALERIA_CFG = CFG;
+var CFG_LISTO = false;
+// Cargar CFG desde Firestore al inicio
+var _cfgPromise = (async function(){
+  try {
+    var snap = await getDoc(doc(db,'config','main'));
+    if(snap.exists()){
+      var data = snap.data();
+      // Convertir chips de objetos Firestore a arrays
+      if(data.chips){
+        Object.keys(data.chips).forEach(function(perfil){
+          data.chips[perfil]=(data.chips[perfil]||[]).map(function(ch){
+            return [ch.label||'', ch.msg||''];
+          });
+        });
+      }
+      Object.assign(CFG, data);
+      window.VALERIA_CFG = CFG;
+      // Aplicar mensaje de bienvenida si está configurado
+      if(CFG.bienvenida && CFG.bienvenida.trim()){
+        var el=document.getElementById('msgBienvenida');
+        if(el) el.innerHTML=CFG.bienvenida;
+      }
+      console.log('CFG cargado desde Firestore');
+    }
+  } catch(e){ console.log('CFG desde defaults:', e); }
+  CFG_LISTO = true;
+})();
+
+// ── INSCRIPCIONES ──
+var INSCR = [];
+
+var PROFILE = null;
+
+// ── NAVEGACIÓN ──
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  document.querySelectorAll('.nl').forEach(b=>b.classList.remove('active'));
+  var map={home:0,inscripcion:1,alumno:2,sedes:3};
+  if(map[id]!==undefined) document.querySelectorAll('.nl')[map[id]].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── BURBUJA VALERIA ──
+var bubbles = [
+  '¡Hola! Soy <strong>Valeria</strong>, tu asistente del CENS 451 😊',
+  '¿Querés inscribirte? Te oriento con el formulario 📋',
+  '¿Sos docente? Preguntame sobre recursos y links 👩‍🏫',
+  'Tenemos 5 sedes en La Matanza 📍',
+  '¡Nunca es tarde para terminar el secundario! 💪'
+];
+var bi=0;
+setInterval(function(){
+  bi=(bi+1)%bubbles.length;
+  var b=document.getElementById('vbubble');
+  b.style.opacity=0;
+  setTimeout(function(){b.innerHTML=bubbles[bi];b.style.opacity=1;},400);
+},4500);
+
+// ── PERFIL ──
+function setProfile(p){
+  PROFILE=p;
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('sel'));
+  event.target.classList.add('sel');
+  var msgs={
+    alumno:'¡Perfecto! Puedo ayudarte con información sobre inscripción, sedes, horarios, documentos y más. ¿Qué necesitás saber?',
+    egresado:'¡Bienvenido/a de vuelta! Puedo ayudarte a consultar tu analítico o resolver dudas sobre tu egreso. ¿Qué necesitás?',
+    docente:'¡Hola colega! 👩‍🏫 Puedo orientarte sobre proyectos anuales, actualización de datos y archivos institucionales. ¿Qué necesitás?'
+  };
+  addMsg(msgs[p],'bot');
+  renderQR(p);
+}
+
+function renderQR(p){
+  var qrs = {
+    alumno:[['⏰ Horarios','¿Cuáles son los horarios?'],['📍 Sede más cercana','¿Qué sede me queda más cerca?'],['📄 Documentos','¿Qué documentos necesito?'],['💰 Es gratuito?','¿El CENS es gratuito?'],['📋 Inscribirme','¿Cómo me inscribo?']],
+    egresado:[['🔍 Mi analítico','¿Cómo consulto mi analítico?'],['📃 Retiro en papel','¿Cómo retiro el analítico en papel?'],['📞 Contacto','¿Cómo los contacto?']],
+    docente:[['📝 Proyecto anual','¿Cómo envío el proyecto anual?'],['🔄 Actualizar datos','¿Cómo actualizo mis datos?'],['📁 Archivos','¿Qué archivos subió la directora?'],['📞 Contacto','¿Cómo los contacto?']]
+  };
+  // Usar chips desde Firestore si están disponibles
+  if(window.VALERIA_CFG && window.VALERIA_CFG.chips && window.VALERIA_CFG.chips[p]){
+    qrs[p]=window.VALERIA_CFG.chips[p];
+  }
+  var container=document.getElementById('chatQR');
+  var list=qrs[p]||[];
+  container.innerHTML=list.map(function(q){return'<button class="qr" onclick="sendQuick(\''+q[1]+'\')">'+q[0]+'</button>'}).join('');
+}
+
+// ── CHAT ──
+function getReply(msg){
+  var m=msg.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  var R=CFG.respuestas||{};
+
+  // Respuestas por perfil docente
+  if(PROFILE==='docente'){
+    if(m.includes('proyecto')||m.includes('anual')){
+      var link=CFG.proyectoLink||null;
+      return link?'📝 Para enviar tu proyecto anual usá este link:<br><a href="'+link+'" target="_blank" style="color:var(--blue2)">'+link+'</a>':'📝 El link para el proyecto anual aún no fue configurado. Consultá con la dirección del CENS 451.';
+    }
+    if(m.includes('dato')||m.includes('actualiz')){
+      var link=CFG.datosLink||null;
+      return link?'🔄 Para actualizar tus datos personales:<br><a href="'+link+'" target="_blank" style="color:var(--blue2)">'+link+'</a>':'🔄 El link para actualización de datos aún no fue cargado. Consultá con la dirección.';
+    }
+    if(m.includes('archivo')||m.includes('documento')||m.includes('directora')||m.includes('secretari')){
+      if(!CFG.archivosDocente||!CFG.archivosDocente.length) return '📁 Aún no hay archivos cargados por la dirección. Revisá más tarde o consultá directamente.';
+      var lista=CFG.archivosDocente.map(function(a){return'📄 <a href="'+a.url+'" target="_blank" style="color:var(--blue2)">'+a.nombre+'</a>'+(a.desc?' — '+a.desc:'')}).join('<br>');
+      return '📁 <b>Archivos de la dirección:</b><br>'+lista;
+    }
+  }
+
+  // Horarios
+  if(m.includes('horario')||m.includes('turno')||m.includes('hora')||m.includes('curso')||m.includes('materia')||m.includes('clase')){
+    var mNorm=m.replace(/[°º\s]/g,'').toUpperCase();
+    var cursoDetectado=null;
+    var matchCurso=mNorm.match(/([1-3])[°º]?([A-Z])/);
+    if(matchCurso) cursoDetectado=matchCurso[1]+'°'+matchCurso[2];
+
+    if(cursoDetectado && CFG.horariosCursos){
+      var encontrado=false;
+      for(var sede in CFG.horariosCursos){
+        var cursosSede=CFG.horariosCursos[sede];
+        if(cursosSede[cursoDetectado]){
+          var franjas=cursosSede[cursoDetectado];
+          var resp='📅 <b>Horario '+cursoDetectado+' — '+sede+':</b><br><br>';
+          resp+='<table style="border-collapse:collapse;font-size:0.9em;width:100%">';
+          resp+='<tr style="background:#1a4fa0;color:#fff"><th style="padding:4px 8px;text-align:left">Horario</th><th style="padding:4px 6px">Lunes</th><th style="padding:4px 6px">Martes</th><th style="padding:4px 6px">Miérc.</th><th style="padding:4px 6px">Jueves</th><th style="padding:4px 6px">Viernes</th></tr>';
+          franjas.forEach(function(f,idx){
+            var bg=idx%2===0?'#eff6ff':'#fff';
+            resp+='<tr style="background:'+bg+'"><td style="padding:4px 8px;font-weight:bold;color:#1a4fa0;white-space:nowrap">'+f.horario+'</td>';
+            [f.lunes,f.martes,f.miercoles,f.jueves,f.viernes].forEach(function(mat){
+              resp+='<td style="padding:4px 6px;font-size:0.85em">'+(mat||'—')+'</td>';
+            });
+            resp+='</tr>';
+          });
+          resp+='</table><br>¿Necesitás info de otro curso? Decime cuál 😊';
+          encontrado=true;
+          return resp;
+        }
+      }
+      if(!encontrado) return '🔍 No encontré el curso <b>'+cursoDetectado+'</b>. Verificá el nombre o consultá en secretaría al <b>11 5312-6676</b>.';
+    }
+
+    if(CFG.horariosCursos){
+      var sedesDisp=Object.keys(CFG.horariosCursos).join(', ');
+      var r2='⏰ El CENS 451 tiene turnos <b>Tarde</b> (14:00–18:00) y <b>Noche</b> (18:00–22:00).<br><br>';
+      r2+='📚 Si querés ver el horario de un <b>curso específico</b>, decime el número y la letra. Por ejemplo:<br>';
+      r2+='&nbsp;&nbsp;👉 <i>"horario del 1°D"</i> · <i>"materias del 2°F"</i> · <i>"horario 3K"</i><br><br>';
+      r2+='📍 Sedes: <b>'+sedesDisp+'</b>';
+      return r2;
+    }
+
+    if(R.horarios) return R.horarios+(CFG.horarioExtra?'<br>ℹ️ '+CFG.horarioExtra:'');
+    var hs=CFG.horarios||[];
+    if(!hs.length) return 'Consultá los horarios en secretaría o llamanos al 11 5312 6676.';
+    var t='Los horarios del CENS 451 son:<br>';
+    hs.forEach(function(h){t+='🕐 <b>Turno '+h.n+':</b> '+h.h+(h.d?' · '+h.d:'')+'<br>';});
+    if(CFG.horarioExtra) t+='<br>ℹ️ '+CFG.horarioExtra;
+    return t;
+  }
+
+  // Sedes
+  if(m.includes('sede')||m.includes('cerca')||m.includes('donde')||m.includes('ubicac')||m.includes('vivo')||m.includes('barrio')||m.includes('localidad')){
+    var sedeResp=R.sedes||'📍 Tenemos <b>5 sedes</b> en La Matanza:<br>⭐ <b>Sede Central:</b> Camacuá 3407 · Villa Luzuriaga<br>📍 <b>Anexo Veteranos:</b> Bolívar 1682 · Ramos Mejía<br>📍 <b>Anexo Torero:</b> Coronel Aguirre 2784 · Rafael Castillo<br>📍 <b>Anexo Atalaya:</b> Del Bañado 10 · Rafael Castillo<br>📍 <b>Anexo Canadá:</b> Canadá 4664 · San Justo';
+    return sedeResp+'<br><br>Decime <b>en qué localidad vivís</b> y te digo cuál te queda más cerca 🗺️';
+  }
+
+  // Detectar localidad en mensaje
+  var barrios=['villa luzuriaga','ramos mejia','san justo','rafael castillo','isidro casanova','gregorio de laferrere','laferrere','ciudad evita','moron','haedo'];
+  var sedeMap={
+    'villa luzuriaga':'Sede Central — Camacuá 3407, Villa Luzuriaga',
+    'ramos mejia':'Anexo Veteranos — Bolívar 1682, Ramos Mejía',
+    'san justo':'Podés concurrir a la <b>Sede Central</b> (Camacuá 3407, Villa Luzuriaga), al <b>Anexo Veteranos</b> (Bolívar 1682, Ramos Mejía) o al <b>Anexo Canadá</b> (Canadá 4664, San Justo). Te recomendamos llamar al 11 5312-6676 para confirmar cupo',
+    'rafael castillo':'Anexo Torero — Coronel Aguirre 2784, Rafael Castillo',
+    'isidro casanova':'Tenés varias sedes cercanas: <b>Anexo Torero</b> (Coronel Aguirre 2784, Rafael Castillo), <b>Anexo Atalaya</b> (Del Bañado 10, Rafael Castillo) y <b>Anexo Canadá</b> (Canadá 4664, San Justo). Llamanos al 11 5312-6676 para ver cuál tiene cupo',
+    'gregorio de laferrere':'Anexo Canadá — Canadá 4664, San Justo',
+    'laferrere':'Anexo Canadá — Canadá 4664, San Justo',
+    'ciudad evita':'Anexo Canadá — Canadá 4664, San Justo',
+    'moron':'Anexo Veteranos — Bolívar 1682, Ramos Mejía',
+    'haedo':'Anexo Veteranos — Bolívar 1682, Ramos Mejía'
+  };
+  for(var i=0;i<barrios.length;i++){if(m.includes(barrios[i])){return '📍 Para quienes viven en <b>'+barrios[i].replace(/\b\w/g,c=>c.toUpperCase())+'</b>, la sede más cercana es:<br><b>'+sedeMap[barrios[i]]+'</b><br><br>¿Querés que te explique cómo inscribirte? 📋';}}
+
+  // Inscripción
+  if(m.includes('inscri')||m.includes('anot')){
+    return R.inscripcion||'Para inscribirte al CENS 451:<br>✅ Completá el formulario online haciendo clic en <b>Preinscripción</b> arriba.<br>📅 <b>Período:</b> '+(CFG.periodo||'Todo el año con cupo disponible')+'<br><br>Una vez enviado, te contactamos para confirmar tu vacante.';
+  }
+
+  // Documentos
+  if(m.includes('document')||m.includes('necesit')||m.includes('traer')){
+    if(R.documentos) return R.documentos+(CFG.docsExtra?'<br><br>ℹ️ '+CFG.docsExtra:'');
+    var docs=CFG.documentos||['DNI (original y fotocopia)','Certificado de estudios previos','Constancia de domicilio'];
+    return 'Para inscribirte necesitás:<br>'+docs.filter(Boolean).map(function(d){return'📄 '+d}).join('<br>')+(CFG.docsExtra?'<br><br>ℹ️ '+CFG.docsExtra:'');
+  }
+
+  // Gratuito
+  if(m.includes('gratis')||m.includes('gratuito')||m.includes('costo')||m.includes('pago')||m.includes('arancel')||m.includes('cobran')||m.includes('plata')){
+    return R.gratuito||'✅ El CENS 451 es completamente <b>gratuito</b>. Es una institución pública del Estado argentino. No hay ningún arancel.';
+  }
+
+  // Analítico
+  if(m.includes('analitico')||m.includes('tramit')||m.includes('consultar')||m.includes('disponible')){
+    setTimeout(function(){
+      addMsg(R.analitico||'Para consultar tu analítico necesito tu <b>DNI</b> o tu <b>apellido</b>. ¿Podés ingresarlo acá?','bot');
+      window._esperandoBusqueda=true;
+    },400);
+    return null;
+  }
+
+  // Contacto
+  if(m.includes('contact')||m.includes('telefon')||m.includes('llamar')||m.includes('whats')){
+    return R.contacto||'📞 <b>Tel/WhatsApp:</b> 11 5312 6676<br>📱 <b>Instagram:</b> @cens.451<br>📍 <b>Sede Central:</b> Camacuá 3407, Villa Luzuriaga';
+  }
+
+  // Título
+  if(m.includes('titulo')||m.includes('diploma')||m.includes('bachiller')){
+    return R.titulo||'🎓 Al completar los 3 años (6 cuatrimestres) obtenés el título de <b>Bachiller para Adultos</b>, con validez nacional en todo el territorio argentino.';
+  }
+
+  // Saludo
+  if(m.includes('hola')||m.includes('buen')) return R.saludo||'¡Hola! 😊 ¿En qué puedo ayudarte hoy?';
+  if(m.includes('gracias')) return '¡De nada! Estoy aquí cuando me necesitás 💙';
+
+  // FAQ configurada desde directivo
+  if(CFG.faq){
+    for(var j=0;j<CFG.faq.length;j++){
+      var kws=CFG.faq[j].keywords.split(',');
+      for(var k=0;k<kws.length;k++){if(m.includes(kws[k].trim())){return CFG.faq[j].respuesta;}}
+    }
+  }
+
+  return R['default']||'Puedo ayudarte con <b>horarios</b>, <b>sedes</b>, <b>inscripción</b>, <b>documentos</b>, <b>analíticos</b> y más. ¿Qué necesitás?';
+}
+
+function addMsg(t,w){
+  var c=document.getElementById('chatMsgs'),d=document.createElement('div');
+  d.className='msg msg-'+w;d.innerHTML=t;c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+async function sendMsg(){
+  var i=document.getElementById('chatInp'),v=i.value.trim();
+  if(!v)return;
+  addMsg(v,'user');i.value='';
+  if(!CFG_LISTO) await _cfgPromise;
+  // Si Valeria está esperando DNI/apellido para buscar
+  if(window._esperandoBusqueda){
+    window._esperandoBusqueda=false;
+    var dni=v.replace(/\./g,'').replace(/\s/g,'');
+    var esNumero=/^\d+$/.test(dni);
+    // Crear div temporal para el resultado en el chat
+    var tmpDiv=document.createElement('div');
+    tmpDiv.className='msg msg-bot';
+    tmpDiv.innerHTML='🔍 Buscando...';
+    document.getElementById('chatMsgs').appendChild(tmpDiv);
+    document.getElementById('chatMsgs').scrollTop=document.getElementById('chatMsgs').scrollHeight;
+    buscarAnalitico(esNumero?dni:'', esNumero?'':v.toLowerCase().trim(), tmpDiv);
+    return;
+  }
+  var reply=getReply(v);
+  if(reply!==null) setTimeout(function(){addMsg(reply,'bot')},380);
+}
+async function sendQuick(t){
+  addMsg(t,'user');
+  if(!CFG_LISTO) await _cfgPromise;
+  var reply=getReply(t);
+  if(reply!==null) setTimeout(function(){addMsg(reply,'bot')},380);
+}
+
+// ── FORMULARIO ──
+function asignarSede(){
+  var loc=document.getElementById('f-loc').value,tag=document.getElementById('sedeTag');
+  if(!loc){tag.style.display='none';return;}
+  var s=SEDES[loc]||{n:'Sede Central',d:'Camacuá 3407 · Villa Luzuriaga'};
+  tag.style.display='block';
+  tag.innerHTML='📍 <b>Sede más cercana asignada:</b> '+s.n+' — '+s.d;
+}
+
+function enviarForm(){
+  var req=[['f-ap','Apellido'],['f-nm','Nombre'],['f-dni','DNI'],['f-loc','Localidad'],['f-año','Último año cursado'],['f-turno','Turno']];
+  for(var i=0;i<req.length;i++){var el=document.getElementById(req[i][0]);if(!el||!el.value.trim()){alert('Por favor completá: '+req[i][1]);return;}}
+  var loc=document.getElementById('f-loc').value;
+  var s=SEDES[loc]||{n:'Sede Central'};
+  var obj={ap:document.getElementById('f-ap').value,nm:document.getElementById('f-nm').value,dni:document.getElementById('f-dni').value,fec:document.getElementById('f-fec').value,tel:document.getElementById('f-tel').value,mail:document.getElementById('f-mail').value,calle:document.getElementById('f-calle').value,loc:loc,cp:document.getElementById('f-cp').value,año:document.getElementById('f-año').value,turno:document.getElementById('f-turno').value,obs:document.getElementById('f-obs').value,sede:s.n,fecha:new Date().toLocaleDateString('es-AR')};
+  addDoc(collection(db,'preinscripciones'), obj).then(function(){
+    document.getElementById('fOk').style.display='block';
+    setTimeout(function(){document.getElementById('fOk').style.display='none';},7000);
+    ['f-ap','f-nm','f-dni','f-fec','f-tel','f-mail','f-calle','f-cp','f-obs'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+    ['f-loc','f-año','f-turno'].forEach(function(id){var el=document.getElementById(id);if(el)el.selectedIndex=0;});
+    document.getElementById('sedeTag').style.display='none';
+  }).catch(function(e){alert('Error al enviar. Intentá de nuevo o llamanos al 11 5312-6676.');console.error(e);});
+}
+
+// ── BUSCAR ANALÍTICO ──
+async function buscarAnalitico(dni, ape, resEl){
+  resEl.innerHTML='<div style="padding:12px;font-size:13px;color:var(--slate)">🔍 Buscando...</div>';
+  function match(r){
+    var ok=true;
+    if(dni) ok=ok&&String(r.dni||'').replace(/\./g,'').replace(/\s/g,'')===dni;
+    if(ape) ok=ok&&String(r.ap||'').toLowerCase().includes(ape);
+    return ok;
+  }
+  try {
+    var [snapP, snapD, snapPa] = await Promise.all([
+      getDocs(collection(db,'analiticos_parcial')),
+      getDocs(collection(db,'analiticos_final_digital')),
+      getDocs(collection(db,'analiticos_final_papel'))
+    ]);
+    var p=snapP.docs.map(d=>d.data()).filter(match);
+    var d=snapD.docs.map(d=>d.data()).filter(match);
+    var pa=snapPa.docs.map(d=>d.data()).filter(match);
+    var total=snapP.size+snapD.size+snapPa.size;
+    if(total===0){
+      resEl.innerHTML='<div style="background:#fef3c7;border-radius:8px;padding:12px;font-size:13px;color:#92400e;margin-top:12px">⚠️ El sistema aún no tiene datos cargados. Comunicate con secretaría al <b>11 5312-6676</b>.</div>';
+      return null;
+    }
+    if(p.length||d.length||pa.length){
+      resEl.innerHTML='<div style="background:#d1fae5;border-radius:8px;padding:14px;font-size:14px;color:#065f46;margin-top:12px">✅ <b>Tu analítico está disponible.</b><br>Deberás comunicarte al número <b>11 5312-6676</b> para coordinar la entrega.</div>';
+      return true;
+    } else {
+      resEl.innerHTML='<div style="background:#fef3c7;border-radius:8px;padding:14px;font-size:14px;color:#92400e;margin-top:12px">⏳ <b>Tu trámite aún está pendiente.</b><br>Volvé a consultar la página más adelante. Gracias.</div>';
+      return false;
+    }
+  } catch(e) {
+    resEl.innerHTML='<div style="background:#fee2e2;border-radius:8px;padding:12px;font-size:13px;color:#991b1b;margin-top:12px">❌ Error al conectar. Intentá de nuevo o llamanos al <b>11 5312-6676</b>.</div>';
+    console.error(e);
+    return null;
+  }
+}
+
+async function buscar(){
+  var dni=document.getElementById('aDNI').value.trim().replace(/\./g,'');
+  var ape=document.getElementById('aApe').value.trim().toLowerCase();
+  if(!dni&&!ape){alert('Ingresá al menos el DNI o el apellido.');return;}
+  await buscarAnalitico(dni, ape, document.getElementById('aResult'));
+}
+
+// Exponer funciones al scope global (necesario con type="module")
+window.show = show;
+window.setProfile = setProfile;
+window.sendMsg = sendMsg;
+window.sendQuick = sendQuick;
+window.asignarSede = asignarSede;
+window.enviarForm = enviarForm;
+window.buscar = buscar;
+window.buscarAnalitico = buscarAnalitico;
+</script>
+</body>
+</html>
